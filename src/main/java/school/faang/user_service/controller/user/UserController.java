@@ -3,6 +3,8 @@ package school.faang.user_service.controller.user;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,7 +60,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.SC_OK).body(createdUser);
     }
 
-    public ResponseEntity<UserDto> getById(Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.SC_OK).body(userService.getById(id));
     }
 
