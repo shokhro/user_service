@@ -2,6 +2,7 @@ package school.faang.user_service.service.user;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import school.faang.user_service.config.context.UserContext;
@@ -16,6 +17,7 @@ import school.faang.user_service.mapper.UserMapper;
 import school.faang.user_service.repository.CountryRepository;
 import school.faang.user_service.repository.UserRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -29,20 +31,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(CreateUserDto userDto) {
-        if (userDto.getPassword().length() < minPasswordLength) {
+        if (userDto.password().length() < minPasswordLength) {
             throw new DataValidationException("Password should be more than " + minPasswordLength +
                     " symbols!");
         }
         User user = userMapper.toUser(userDto);
         Country country = countryRepository
                 .findById(userDto
-                        .getCountryId())
+                        .countryId())
                 .orElseThrow(() ->
                         new EntityNotFoundException(String
-                                .format("Country %d not found", userDto.getCountryId())));
+                                .format("Country %d not found", userDto.countryId())));
 
         user.setCountry(country);
         User userToSaved = userRepository.save(user);
+        log.info("User created: id={}", userToSaved.getId());
         return userMapper.toUserDto(userToSaved);
     }
 
@@ -59,12 +62,13 @@ public class UserServiceImpl implements UserService {
         userMapper.update(userDto, user);
         Country country = countryRepository
                 .findById(userDto
-                        .getCountryId())
+                        .countryId())
                 .orElseThrow(() ->
                         new EntityNotFoundException(String
-                                .format("Country %d not found", userDto.getCountryId())));
+                                .format("Country %d not found", userDto.countryId())));
         user.setCountry(country);
         user = userRepository.save(user);
+        log.info("User updated: id={}", id);
         return userMapper.toUserDto(user);
     }
 
