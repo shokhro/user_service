@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import school.faang.user_service.dto.user.CreateUserDto;
+import school.faang.user_service.dto.user.SearchUserDto;
 import school.faang.user_service.dto.user.UpdateUserDto;
 import school.faang.user_service.dto.user.UserDto;
 import school.faang.user_service.exception.DataValidationException;
 import school.faang.user_service.service.user.UserService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,6 +65,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.SC_OK).body(userService.getById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAll(@RequestBody SearchUserDto searchUserDto) {
+        List<UserDto> users = userService.getUsers(searchUserDto);
+        return ResponseEntity.status(200).body(users);
     }
 
 }
