@@ -43,7 +43,11 @@ public class SkillController {
         return ResponseEntity.status(200).body(result);
     }
 
-
+    @PostMapping("/{skillId}/acquire")
+    public ResponseEntity<Void> acquireSkillFromOffers(@PathVariable Long skillId) {
+        skillService.acquireSkillFromOffers(skillId, userContext.getUserId());
+        return ResponseEntity.ok().build();
+    }
 
 
 }

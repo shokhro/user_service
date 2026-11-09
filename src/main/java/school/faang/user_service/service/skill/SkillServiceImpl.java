@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import school.faang.user_service.config.context.UserContext;
 import school.faang.user_service.dto.skill.CreateSkillDto;
 import school.faang.user_service.dto.skill.SkillCandidateDto;
@@ -13,6 +14,7 @@ import school.faang.user_service.exception.DataValidationException;
 import school.faang.user_service.exception.ForbiddenException;
 import school.faang.user_service.mapper.SkillMapper;
 import school.faang.user_service.repository.SkillRepository;
+import school.faang.user_service.repository.UserSkillGuaranteeRepository;
 import school.faang.user_service.repository.recommendation.SkillOfferRepository;
 
 import java.util.ArrayList;
@@ -31,16 +33,24 @@ public class SkillServiceImpl implements SkillService{
     private final SkillMapper skillMapper;
     private final SkillOfferRepository skillOfferRepository;
     private final UserContext userContext;
+    private final UserSkillGuaranteeRepository guaranteeRepository;
 
     @Override
     public SkillDto create(CreateSkillDto skillDto) {
-        if (skillRepository.existsByTitle(skillDto.title())) {
-            throw new DataValidationException("Such a skill already exists!");
-        }
+        validateSkill(skillDto);
         Skill skill = skillMapper.toSkill(skillDto);
         Skill savedSkill = skillRepository.save(skill);
         log.info("called create method: title={}", skill.getTitle());
         return skillMapper.toSkillDto(savedSkill);
+    }
+
+    private void validateSkill(CreateSkillDto skillDto) {
+        if (skillDto.title().isBlank()) {
+            throw new DataValidationException("Enter skill title, please");
+        }
+        if (skillRepository.existsByTitle(skillDto.title())) {
+            throw new DataValidationException("Such a skill already exists!");
+        }
     }
 
     @Override
@@ -74,13 +84,27 @@ public class SkillServiceImpl implements SkillService{
     }
 
     @Override
+    @Transactional
     public void acquireSkillFromOffers(long skillId, long userId) {
-        if (skillRepository.existsById(skillId)) {
-            throw new DataValidationException("Such a skill already exists!");
+        log.info("acquireSkillFromOffers called: skillId={}, userId={}", skillId, userId);
+
+        if (!skillRepository.existsById(skillId)) {
+            throw new DataValidationException("Skill with id " + skillId + " not found");
         }
 
-        log.info("called assignSkillToUser, skillId={}, userId={}", skillId, userId);
+        if (skillRepository.findUserSkill(skillId, userId).isPresent()) {
+            throw new DataValidationException("User already has this skill");
+        }
+
+        int offersAmount = skillOfferRepository.countAllOffersOfSkill(skillId, userId);
+        if (minSkillOffers > offersAmount) {
+            throw new DataValidationException("Skill was offered "
+                    + offersAmount + " time(s), but at least "
+                    + minSkillOffers + " required");
+        }
+
         skillRepository.assignSkillToUser(skillId, userId);
+        log.info("Skill {} assigned to user {}", skillId, userId);
     }
 }
 
