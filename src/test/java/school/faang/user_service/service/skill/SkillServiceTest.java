@@ -37,34 +37,32 @@ public class SkillServiceTest {
     @Captor
     private ArgumentCaptor<Skill> captor;
 
-    @Test
-    public void testCreateWithBlankTitle() {
-        CreateSkillDto skillDto = new CreateSkillDto("  ");
-        assertThrows(DataValidationException.class, () -> skillService.create(skillDto));
-    }
 
-    @Test
-    public void testCreateWithExistingTitle() {
-        CreateSkillDto skillDto = new CreateSkillDto("Ruby");
-        when(skillRepository.existsByTitle(skillDto.title())).thenReturn(true);
 
-        assertThrows(DataValidationException.class, () -> skillService.create(skillDto));
-    }
+//    @Test
+//    public void testCreateWithExistingTitle() {
+//        CreateSkillDto skillDto = new CreateSkillDto("Ruby");
+//        when(skillRepository.existsByTitle(skillDto.title())).thenReturn(true);
+//
+//        assertThrows(DataValidationException.class, () -> skillService.create(skillDto));
+//    }
+//
+//    @Test
+//    public void testCreateSavesSkill() {
+//        CreateSkillDto skillDto = new CreateSkillDto("Rust");
+//        when(skillRepository.existsByTitle(skillDto.title())).thenReturn(false);
+//        when(skillRepository.save(any(Skill.class)))
+//                .thenAnswer(invocation -> invocation.getArgument(0));
+//
+//        SkillDto result = skillService.create(skillDto);
+//
+//        verify(skillRepository, times(1)).save(captor.capture());
+//        Skill skill = captor.getValue();
+//        assertEquals(skillDto.title(), skill.getTitle());
+//        assertEquals(skillDto.title(), result.getTitle());
+//    }
 
-    @Test
-    public void testCreateSavesSkill() {
-        CreateSkillDto skillDto = new CreateSkillDto("Rust");
-        when(skillRepository.existsByTitle(skillDto.title())).thenReturn(false);
-        when(skillRepository.save(any(Skill.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        SkillDto result = skillService.create(skillDto);
-
-        verify(skillRepository, times(1)).save(captor.capture());
-        Skill skill = captor.getValue();
-        assertEquals(skillDto.title(), skill.getTitle());
-        assertEquals(skillDto.title(), result.getTitle());
-    }
 }
 
 

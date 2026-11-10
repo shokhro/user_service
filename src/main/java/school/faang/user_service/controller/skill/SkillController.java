@@ -33,7 +33,8 @@ public class SkillController {
 
     @GetMapping("/offered")
     public ResponseEntity<List<SkillCandidateDto>> getOfferedSkills() {
-        List<SkillCandidateDto> offeredSkills = skillService.getOfferedSkills(userContext.getUserId());
+        List<SkillCandidateDto> offeredSkills =
+                skillService.getOfferedSkills(userContext.getUserId());
         return ResponseEntity.status(200).body(offeredSkills);
     }
 

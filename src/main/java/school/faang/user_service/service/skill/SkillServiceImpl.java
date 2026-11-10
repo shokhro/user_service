@@ -16,6 +16,7 @@ import school.faang.user_service.mapper.SkillMapper;
 import school.faang.user_service.repository.SkillRepository;
 import school.faang.user_service.repository.UserSkillGuaranteeRepository;
 import school.faang.user_service.repository.recommendation.SkillOfferRepository;
+import school.faang.user_service.validator.skill.SkillValidator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,36 +35,25 @@ public class SkillServiceImpl implements SkillService{
     private final SkillOfferRepository skillOfferRepository;
     private final UserContext userContext;
     private final UserSkillGuaranteeRepository guaranteeRepository;
+    private final SkillValidator skillValidator;
 
     @Override
     public SkillDto create(CreateSkillDto skillDto) {
-        validateSkill(skillDto);
+        skillValidator.validateSkillByTitle(skillDto);
         Skill skill = skillMapper.toSkill(skillDto);
         Skill savedSkill = skillRepository.save(skill);
         log.info("called create method: title={}", skill.getTitle());
         return skillMapper.toSkillDto(savedSkill);
     }
 
-    private void validateSkill(CreateSkillDto skillDto) {
-        if (skillDto.title().isBlank()) {
-            throw new DataValidationException("Enter skill title, please");
-        }
-        if (skillRepository.existsByTitle(skillDto.title())) {
-            throw new DataValidationException("Such a skill already exists!");
-        }
-    }
-
     @Override
     public List<SkillCandidateDto> getOfferedSkills(long userId) {
-        if (userContext.getUserId() != userId) {
-            throw new ForbiddenException("You can only see what belongs to you!");
-        }
+        skillValidator.validateUserOwnership(userId);
 
         List<Skill> offeredSkills = skillRepository.findSkillsOfferedToUser(userId);
 
         Set<Long> seenIds = new HashSet<>();
         List<SkillCandidateDto> result = new ArrayList<>();
-
         for (Skill skill : offeredSkills) {
             if (seenIds.add(skill.getId())) {
                 int offersAmount = skillOfferRepository.countAllOffersOfSkill(skill.getId(), userId);
