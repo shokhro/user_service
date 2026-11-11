@@ -17,6 +17,7 @@ import school.faang.user_service.dto.user.UpdateUserDto;
 import school.faang.user_service.dto.user.UserDto;
 import school.faang.user_service.exception.DataValidationException;
 import school.faang.user_service.service.user.UserService;
+import school.faang.user_service.validator.user.UserValidator;
 
 import java.util.List;
 
@@ -26,22 +27,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserValidator userValidator;
 
     @PostMapping
     public ResponseEntity<UserDto> create(@RequestBody CreateUserDto userDto) {
-        if (userDto.username() == null || userDto.username().isBlank()) {
-            throw new DataValidationException("Username should be present!");
-        }
-        if (userDto.email() == null || userDto.email().isBlank()) {
-            throw new DataValidationException("Email should be present!");
-        }
-        if (userDto.password() == null || userDto.password().isBlank()) {
-            throw new DataValidationException("Password should be present!");
-        }
-        if (userDto.countryId() == null) {
-            throw new DataValidationException("Country should be present!");
-        }
-
+        userValidator.validateCreate(userDto);
         UserDto createdUser = userService.create(userDto);
         return ResponseEntity.status(HttpStatus.SC_CREATED).body(createdUser);
     }
@@ -49,15 +39,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> update(@PathVariable Long id,
                                           @RequestBody UpdateUserDto userDto) {
-        if (userDto.username() == null || userDto.username().isBlank()) {
-            throw new DataValidationException("Username should be present!");
-        }
-        if (userDto.email() == null || userDto.email().isBlank()) {
-            throw new DataValidationException("Email should be present!");
-        }
-        if (userDto.countryId() == null) {
-            throw new DataValidationException("Country should be present!");
-        }
+        userValidator.validateUpdate(userDto);
         UserDto createdUser = userService.update(id, userDto);
         return ResponseEntity.status(HttpStatus.SC_OK).body(createdUser);
     }
