@@ -28,8 +28,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SkillServiceImpl implements SkillService{
 
-    @Value("${min.skill.offers}")
-    private int minSkillOffers;
     private final SkillRepository skillRepository;
     private final SkillMapper skillMapper;
     private final SkillOfferRepository skillOfferRepository;
@@ -45,6 +43,7 @@ public class SkillServiceImpl implements SkillService{
         log.info("called create method: title={}", skill.getTitle());
         return skillMapper.toSkillDto(savedSkill);
     }
+
 
     @Override
     public List<SkillCandidateDto> getOfferedSkills(long userId) {
@@ -78,20 +77,7 @@ public class SkillServiceImpl implements SkillService{
     public void acquireSkillFromOffers(long skillId, long userId) {
         log.info("acquireSkillFromOffers called: skillId={}, userId={}", skillId, userId);
 
-        if (!skillRepository.existsById(skillId)) {
-            throw new DataValidationException("Skill with id " + skillId + " not found");
-        }
-
-        if (skillRepository.findUserSkill(skillId, userId).isPresent()) {
-            throw new DataValidationException("User already has this skill");
-        }
-
-        int offersAmount = skillOfferRepository.countAllOffersOfSkill(skillId, userId);
-        if (minSkillOffers > offersAmount) {
-            throw new DataValidationException("Skill was offered "
-                    + offersAmount + " time(s), but at least "
-                    + minSkillOffers + " required");
-        }
+        skillValidator.validateSkillAcquisitionFromOffers(skillId, userId);
 
         skillRepository.assignSkillToUser(skillId, userId);
         log.info("Skill {} assigned to user {}", skillId, userId);

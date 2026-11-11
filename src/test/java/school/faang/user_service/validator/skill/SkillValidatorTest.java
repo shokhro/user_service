@@ -20,6 +20,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SkillValidatorTest {
+
+    private static final long SKILL_ID = 1L;
+    private static final long USER_ID = 10L;
+
     @Mock
     private UserContext userContext;
     @Mock
