@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import school.faang.user_service.dto.user.CreateUserDto;
 import school.faang.user_service.dto.user.SearchUserDto;
 import school.faang.user_service.dto.user.UpdateUserDto;
@@ -53,6 +54,11 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAll(@RequestBody SearchUserDto searchUserDto) {
         List<UserDto> users = userService.getUsers(searchUserDto);
         return ResponseEntity.status(200).body(users);
+    }
+
+    @PostMapping("/{id}/avatar")
+    public void uploadAvatar(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        System.out.println("File name: " + file.getOriginalFilename());
     }
 
 }
