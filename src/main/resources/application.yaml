@@ -35,3 +35,13 @@ project-service:
 payment-service:
   host: localhost
   port: 9080
+
+user:
+  password:
+    min:
+      length: 6
+
+
+min:
+  skill:
+    offers: 3
