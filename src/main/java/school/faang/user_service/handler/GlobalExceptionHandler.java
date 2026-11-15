@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import school.faang.user_service.exception.DataValidationException;
 import school.faang.user_service.exception.ErrorResponse;
+import school.faang.user_service.exception.ForbiddenException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -19,10 +20,17 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(DataValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleDataValidationException(DataValidationException e) {
         log.error("Data validation exception occurred", e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbiddenException(ForbiddenException e) {
+        log.error("Forbidden exception occurred");
         return new ErrorResponse(e.getMessage());
     }
 
@@ -37,7 +45,7 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException e) {
         log.error("Entity not found exception occurred", e);
