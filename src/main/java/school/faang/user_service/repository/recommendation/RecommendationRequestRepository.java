@@ -15,4 +15,6 @@ public interface RecommendationRequestRepository extends JpaRepository<Recommend
             LIMIT 1
             """)
     Optional<RecommendationRequest> findLatestPendingRequest(long requesterId, long receiverId);
+
+    Optional<RecommendationRequest> findFirstByRequesterIdAndReceiverIdOrderByCreatedAtDesc(Long requesterId, Long receiverId);
 }

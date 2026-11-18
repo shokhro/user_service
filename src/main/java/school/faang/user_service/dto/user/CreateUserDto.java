@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CreateUserDto(
-        @NotBlank(message = "Username should be present!") String username,
-        @NotBlank(message = "Email should be present!") String email,
-        @NotBlank(message = "Password should be present!") String password,
-        @NotNull(message = "Country should be present!") Long countryId,
+        @NotBlank String username,
+        @NotBlank String email,
+        @NotBlank String password,
+        @NotNull Long countryId,
         String phone
 ) {}

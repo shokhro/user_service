@@ -1,4 +1,4 @@
-package school.faang.user_service.service.recommendation;
+package school.faang.user_service.service.recommendation.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import school.faang.user_service.entity.recommendation.Recommendation;
 import school.faang.user_service.filter.recommendation.RecommendationFilter;
 import school.faang.user_service.mapper.RecommendationMapper;
 import school.faang.user_service.repository.recommendation.RecommendationRepository;
+import school.faang.user_service.service.recommendation.RecommendationService;
 import school.faang.user_service.validator.recommendation.RecommendationValidator;
 
 import java.util.List;

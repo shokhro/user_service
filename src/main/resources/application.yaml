@@ -56,3 +56,7 @@ min:
 recommendation:
   interval:
     months: 6
+
+recommendation-request:
+  interval:
+    months: 6
