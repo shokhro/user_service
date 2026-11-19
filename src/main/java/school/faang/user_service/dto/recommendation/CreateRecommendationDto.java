@@ -7,5 +7,4 @@ import jakarta.validation.constraints.Positive;
 public record CreateRecommendationDto(
         @Positive @NotNull Long receiverId,
         @NotBlank String content) {
-
 }

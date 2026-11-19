@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import school.faang.user_service.config.context.UserContext;
 import school.faang.user_service.dto.skill.CreateSkillDto;
+import school.faang.user_service.entity.Skill;
 import school.faang.user_service.exception.DataValidationException;
 import school.faang.user_service.exception.ForbiddenException;
 import school.faang.user_service.repository.SkillRepository;
 import school.faang.user_service.repository.recommendation.SkillOfferRepository;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +32,24 @@ public class SkillValidator {
     public void validateUserOwnership(long userId) {
         if (userContext.getUserId() != userId) {
             throw new ForbiddenException("You can only see what belongs to you!");
+        }
+    }
+
+    public void validateAllExist(List<Long> skillIds) {
+        if (skillIds.isEmpty()) {
+            return;
+        }
+
+        List<Long> existingIds = skillRepository.findAllById(skillIds)
+                .stream()
+                .map(Skill::getId)
+                .toList();
+
+        List<Long> missingIds = skillIds.stream().filter(id -> !existingIds.contains(id))
+                .toList();
+
+        if (!missingIds.isEmpty()) {
+            throw new DataValidationException("Skills not found: " + missingIds);
         }
     }
 
@@ -58,5 +79,7 @@ public class SkillValidator {
                     + minSkillOffers + " required");
         }
     }
+
+
 
 }

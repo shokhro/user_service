@@ -16,8 +16,10 @@ import school.faang.user_service.entity.recommendation.RecommendationRequest;
 import school.faang.user_service.filter.recommendationRequest.RecommendationRequestFilter;
 import school.faang.user_service.mapper.RecommendationRequestMapper;
 import school.faang.user_service.repository.recommendation.RecommendationRequestRepository;
+import school.faang.user_service.repository.recommendation.SkillRequestRepository;
 import school.faang.user_service.service.recommendation.RecommendationRequestService;
 import school.faang.user_service.validator.recommendation.RecommendationRequestValidator;
+import school.faang.user_service.validator.skill.SkillValidator;
 import school.faang.user_service.validator.user.UserValidator;
 
 import java.util.List;
@@ -34,13 +36,21 @@ public class RecommendationRequestServiceImpl implements RecommendationRequestSe
     private final List<RecommendationRequestFilter> filters;
     private final UserContext userContext;
     private final UserValidator userValidator;
+    private final SkillValidator skillValidator;
+    private final SkillRequestRepository skillRequestRepository;
 
     @Override
+    @Transactional
     public RecommendationRequestDto create(CreateRecommendationRequestDto recommendationRequestDto) {
         long requesterId = userContext.getUserId();
         long receiverId = recommendationRequestDto.receiverId();
+        List<Long> skillIds = recommendationRequestDto.skillIds() == null
+                ? List.of()
+                : recommendationRequestDto.skillIds().stream().distinct().toList();
+
         recommendationRequestValidator.validateNotSelf(requesterId, receiverId);
         recommendationRequestValidator.validateInterval(requesterId, receiverId);
+        skillValidator.validateAllExist(skillIds);
 
         User receiver = userValidator.findByIdOrElseThrows(receiverId);
         User requester = userValidator.findByIdOrElseThrows(requesterId);
@@ -50,8 +60,10 @@ public class RecommendationRequestServiceImpl implements RecommendationRequestSe
         recommendationRequest.setReceiver(receiver);
         recommendationRequest.setRequester(requester);
         recommendationRequest.setStatus(RequestStatus.PENDING);
-
         RecommendationRequest saved = recommendationRequestRepository.save(recommendationRequest);
+
+        skillIds.forEach(skillId -> skillRequestRepository.create(saved.getId(), skillId));
+
         log.info("Recommendation request created: id={}, requesterId={}, receiverId={}",
                 saved.getId(), requesterId, receiverId);
         return recommendationRequestMapper.toDto(saved);
