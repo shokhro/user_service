@@ -28,6 +28,14 @@ logging:
   level:
     root: info
 
+services:
+  s3:
+    endpoint: http://localhost:9001
+    accessKey: user
+    sedretKey: password
+    bucketName: corpbucket
+
+
 project-service:
   host: localhost
   port: 8082
@@ -41,7 +49,14 @@ user:
     min:
       length: 6
 
-
 min:
   skill:
     offers: 3
+
+recommendation:
+  interval:
+    months: 6
+
+recommendation-request:
+  interval:
+    months: 6

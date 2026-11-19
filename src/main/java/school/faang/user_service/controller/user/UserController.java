@@ -1,7 +1,8 @@
 package school.faang.user_service.controller.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +17,7 @@ import school.faang.user_service.dto.user.CreateUserDto;
 import school.faang.user_service.dto.user.SearchUserDto;
 import school.faang.user_service.dto.user.UpdateUserDto;
 import school.faang.user_service.dto.user.UserDto;
-import school.faang.user_service.exception.DataValidationException;
 import school.faang.user_service.service.user.UserService;
-import school.faang.user_service.validator.user.UserValidator;
 
 import java.util.List;
 
@@ -28,32 +27,29 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserValidator userValidator;
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody CreateUserDto userDto) {
-        userValidator.validateCreate(userDto);
+    public ResponseEntity<UserDto> create(@RequestBody @Valid CreateUserDto userDto) {
         UserDto createdUser = userService.create(userDto);
-        return ResponseEntity.status(HttpStatus.SC_CREATED).body(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> update(@PathVariable Long id,
-                                          @RequestBody UpdateUserDto userDto) {
-        userValidator.validateUpdate(userDto);
+                                          @RequestBody @Valid UpdateUserDto userDto) {
         UserDto createdUser = userService.update(id, userDto);
-        return ResponseEntity.status(HttpStatus.SC_OK).body(createdUser);
+        return ResponseEntity.status(HttpStatus.OK).body(createdUser);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.SC_OK).body(userService.getById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAll(@RequestBody SearchUserDto searchUserDto) {
+    public ResponseEntity<List<UserDto>> getAll(@RequestBody @Valid SearchUserDto searchUserDto) {
         List<UserDto> users = userService.getUsers(searchUserDto);
-        return ResponseEntity.status(200).body(users);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
     @PostMapping("/{id}/avatar")
