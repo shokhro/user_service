@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import school.faang.user_service.config.context.UserContext;
 import school.faang.user_service.dto.user.UserDto;
 import school.faang.user_service.entity.User;
-import school.faang.user_service.exception.ForbiddenException;
 import school.faang.user_service.mapper.UserMapper;
 import school.faang.user_service.repository.mentorship.MentorshipRepository;
 import school.faang.user_service.validator.mentorship.MentorshipValidator;
@@ -22,7 +21,6 @@ public class MentorshipServiceImpl implements MentorshipService {
 
     private final MentorshipRepository mentorshipRepository;
     private final MentorshipValidator mentorshipValidator;
-    private final UserContext userContext;
     private final UserValidator userValidator;
     private final UserMapper userMapper;
 
@@ -57,11 +55,8 @@ public class MentorshipServiceImpl implements MentorshipService {
 
     @Override
     @Transactional
-    public void deleteMentorship(long mentorId, long menteeId) {
-        long currentUser = userContext.getUserId();
-        if (currentUser != mentorId && currentUser != menteeId) {
-            throw new ForbiddenException("Only mentor or mentee can delete the mentorship");
-        }
+    public void deleteMentorship(long menteeId, long mentorId) {
+        mentorshipValidator.validateCanDeleteMentorship(menteeId, mentorId);
         User mentee = userValidator.findByIdOrElseThrows(menteeId);
         boolean removed = mentee.getMentors()
                 .removeIf(mentor -> mentor.getId() == mentorId);
