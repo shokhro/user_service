@@ -52,6 +52,6 @@ public class UserValidator {
         return userRepository.findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException(String
-                                .format("Country %d not found", id)));
+                                .format("Entity %d not found", id)));
     }
 }
