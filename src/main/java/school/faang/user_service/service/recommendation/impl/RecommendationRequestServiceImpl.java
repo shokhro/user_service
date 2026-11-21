@@ -52,8 +52,8 @@ public class RecommendationRequestServiceImpl implements RecommendationRequestSe
         recommendationRequestValidator.validateInterval(requesterId, receiverId);
         skillValidator.validateAllExist(skillIds);
 
-        User receiver = userValidator.findByIdOrElseThrows(receiverId);
-        User requester = userValidator.findByIdOrElseThrows(requesterId);
+        User receiver = userValidator.validateUserExists(receiverId);
+        User requester = userValidator.validateUserExists(requesterId);
 
         RecommendationRequest recommendationRequest =
                 recommendationRequestMapper.toEntity(recommendationRequestDto);

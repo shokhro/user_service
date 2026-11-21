@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import school.faang.user_service.config.context.UserContext;
 import school.faang.user_service.dto.user.UserDto;
 import school.faang.user_service.entity.User;
 import school.faang.user_service.mapper.UserMapper;
@@ -28,8 +27,8 @@ public class MentorshipServiceImpl implements MentorshipService {
     @Transactional
     public void addMentorship(long mentorId, long menteeId) {
         mentorshipValidator.validateMentorAndMenteeDiffer(mentorId, menteeId);
-        User mentor = userValidator.findByIdOrElseThrows(mentorId);
-        User mentee = userValidator.findByIdOrElseThrows(menteeId);
+        User mentor = userValidator.validateUserExists(mentorId);
+        User mentee = userValidator.validateUserExists(menteeId);
         boolean alreadyExists = mentee.getMentors().stream()
                 .anyMatch(m -> m.getId() == mentorId);
         if (!alreadyExists) {
@@ -42,14 +41,14 @@ public class MentorshipServiceImpl implements MentorshipService {
     @Override
     @Transactional(readOnly = true)
     public List<UserDto> getMentees(long userId) {
-        User user = userValidator.findByIdOrElseThrows(userId);
+        User user = userValidator.validateUserExists(userId);
         return user.getMentees().stream().map(userMapper::toUserDto).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<UserDto> getMentors(long userId) {
-        User user = userValidator.findByIdOrElseThrows(userId);
+        User user = userValidator.validateUserExists(userId);
         return user.getMentors().stream().map(userMapper::toUserDto).toList();
     }
 
@@ -57,7 +56,7 @@ public class MentorshipServiceImpl implements MentorshipService {
     @Transactional
     public void deleteMentorship(long menteeId, long mentorId) {
         mentorshipValidator.validateCanDeleteMentorship(menteeId, mentorId);
-        User mentee = userValidator.findByIdOrElseThrows(menteeId);
+        User mentee = userValidator.validateUserExists(menteeId);
         boolean removed = mentee.getMentors()
                 .removeIf(mentor -> mentor.getId() == mentorId);
 
