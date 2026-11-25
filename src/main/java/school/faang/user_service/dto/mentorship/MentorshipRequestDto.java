@@ -11,7 +11,7 @@ public class MentorshipRequestDto {
     private final String description;
     private final UserDto requester;
     private final UserDto receiver;
-    private RequestStatus status;
-    private String createdAt;
-    private String updatedAt;
+    private final RequestStatus status;
+    private final String createdAt;
+    private final String updatedAt;
 }

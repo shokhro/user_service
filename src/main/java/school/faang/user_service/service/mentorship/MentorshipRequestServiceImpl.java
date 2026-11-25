@@ -40,6 +40,7 @@ public class MentorshipRequestServiceImpl implements MentorshipRequestService{
         mentorshipRequestValidator.validateCreate(currentUserId, mentorId);
         MentorshipRequest mentorshipRequest = mentorshipRequestRepository
                 .create(currentUserId, mentorId, requestDto.description());
+
         return mentorshipRequestMapper.toDto(mentorshipRequest);
     }
     

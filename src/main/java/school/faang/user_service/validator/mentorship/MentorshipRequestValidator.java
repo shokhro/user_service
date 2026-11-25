@@ -32,15 +32,15 @@ public class MentorshipRequestValidator {
         latestRequest.ifPresent(this::validateTimeInterval);
     }
 
-    public void validateNotSelfRequest(long requesterId, long receiverId) {
+    private void validateNotSelfRequest(long requesterId, long receiverId) {
         if (receiverId == requesterId) {
             throw new DataValidationException("You cannot send a mentorship request to yourself.");
         }
     }
 
-    public void validateTimeInterval(MentorshipRequest latestRequest) {
+    private void validateTimeInterval(MentorshipRequest latestRequest) {
         LocalDateTime nextAllowedTime = latestRequest.getCreatedAt().plusMonths(intervalMonths);
-        if (nextAllowedTime.isBefore(LocalDateTime.now())) {
+        if (LocalDateTime.now().isBefore(nextAllowedTime)) {
             throw new DataValidationException(
                     "You can send the next request after " + nextAllowedTime);
         }
