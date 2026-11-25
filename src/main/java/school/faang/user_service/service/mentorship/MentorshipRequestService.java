@@ -1,5 +1,6 @@
 package school.faang.user_service.service.mentorship;
 
+import school.faang.user_service.dto.RejectionDto;
 import school.faang.user_service.dto.mentorship.CreateMentorshipRequestDto;
 import school.faang.user_service.dto.mentorship.MentorshipRequestDto;
 import school.faang.user_service.dto.mentorship.MentorshipRequestFilterDto;
@@ -13,5 +14,7 @@ public interface MentorshipRequestService {
     List<MentorshipRequestDto> getByFilter(MentorshipRequestFilterDto filterDto);
 
     void accept(long requesterId);
+
+    void reject(long mentorshipRequestId, RejectionDto rejectionDto);
 
 }

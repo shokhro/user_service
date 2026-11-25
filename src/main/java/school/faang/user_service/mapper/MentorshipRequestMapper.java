@@ -9,8 +9,7 @@ import school.faang.user_service.entity.MentorshipRequest;
 @Mapper(componentModel = "spring", uses = UserMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MentorshipRequestMapper {
 
-    @Mapping(source = "createdAt", target = "createdAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    @Mapping(source = "updatedAt", target = "updatedAt", dateFormat = "yyyy-MM-dd HH:mm:ss")
+
     MentorshipRequestDto toDto(MentorshipRequest mentorshipRequest);
 
 
