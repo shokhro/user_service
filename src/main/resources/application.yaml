@@ -60,3 +60,7 @@ recommendation:
 recommendation-request:
   interval:
     months: 6
+
+mentorship-request:
+  interval:
+    months: 3

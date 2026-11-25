@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import school.faang.user_service.config.context.UserContext;
 import school.faang.user_service.dto.user.CreateUserDto;
-import school.faang.user_service.dto.user.UpdateUserDto;
-import school.faang.user_service.dto.user.UserDto;
 import school.faang.user_service.entity.Country;
 import school.faang.user_service.entity.User;
 import school.faang.user_service.exception.DataValidationException;
@@ -48,7 +46,7 @@ public class UserValidator {
         }
     }
 
-    public User findByIdOrElseThrows(long id) {
+    public User validateUserExists(long id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException(String

@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(Long id, UpdateUserDto userDto) {
         userValidator.validateProfileOwner(id);
-        User user = userValidator.findByIdOrElseThrows(id);
+        User user = userValidator.validateUserExists(id);
         userMapper.update(userDto, user);
         Country country = userValidator.findByIdCountry(userDto.countryId());
         user.setCountry(country);
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(Long id) {
-        User user = userValidator.findByIdOrElseThrows(id);
+        User user = userValidator.validateUserExists(id);
         return userMapper.toUserDto(user);
     }
 
