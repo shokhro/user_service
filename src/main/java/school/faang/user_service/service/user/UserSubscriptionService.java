@@ -16,4 +16,6 @@ public interface UserSubscriptionService {
     CountResponse getFolloweesCount(long followerId);
 
     List<UserDto> getFollowers(long followeeId);
+
+    List<UserDto> getFollowees(long followerId);
 }

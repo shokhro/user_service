@@ -50,7 +50,14 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService{
 
     @Override
     public List<UserDto> getFollowers(long followeeId) {
-        return subscriptionRepository.findByFollowerId(followeeId)
+        return subscriptionRepository.findByFolloweeId(followeeId)
+                .map(userMapper::toUserDto)
+                .toList();
+    }
+
+    @Override
+    public List<UserDto> getFollowees(long followerId) {
+        return subscriptionRepository.findByFollowerId(followerId)
                 .map(userMapper::toUserDto)
                 .toList();
     }
