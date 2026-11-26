@@ -3,11 +3,13 @@ package school.faang.user_service.controller.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import school.faang.user_service.config.context.UserContext;
+import school.faang.user_service.dto.CountResponse;
 import school.faang.user_service.service.user.UserSubscriptionService;
 
 @RestController
@@ -27,5 +29,15 @@ public class UserSubscriptionController {
     public ResponseEntity<Void> unFollowUser(@PathVariable long followeeId) {
         userSubscriptionService.followUser(userContext.getUserId(), followeeId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/followees/{followeeId}")
+    public CountResponse getFollowersCount(@PathVariable long followeeId) {
+        return userSubscriptionService.getFollowersCount(followeeId);
+    }
+
+    @GetMapping("/followers/{followerId}")
+    public CountResponse getFolloweesCount(@PathVariable long followerId) {
+        return userSubscriptionService.getFolloweesCount(followerId);
     }
 }
