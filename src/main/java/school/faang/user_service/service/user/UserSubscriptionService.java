@@ -9,7 +9,7 @@ public interface UserSubscriptionService {
 
     void followUser(long followerId, long followeeId);
 
-    void unFollowUser(long followerId, long followeeId);
+    void unfollowUser(long followerId, long followeeId);
 
     CountResponse getFollowersCount(long followeeId);
 

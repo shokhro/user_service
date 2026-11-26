@@ -18,42 +18,44 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/subscriptions")
+@RequestMapping("/api/v1/users")
 public class UserSubscriptionController {
     private final UserSubscriptionService userSubscriptionService;
     private final UserContext userContext;
 
-    @PostMapping("/{followeeId}")
-    public ResponseEntity<Void> followUser(long followeeId) {
-        userSubscriptionService.followUser(userContext.getUserId(), followeeId);
+    @PostMapping("/{userId}/follow")
+    public ResponseEntity<Void> followUser(@PathVariable long userId) {
+        userSubscriptionService.followUser(userContext.getUserId(), userId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{followeeId}")
-    public ResponseEntity<Void> unFollowUser(@PathVariable long followeeId) {
-        userSubscriptionService.followUser(userContext.getUserId(), followeeId);
+    @DeleteMapping("/{userId}/follow")
+    public ResponseEntity<Void> unfollowUser(@PathVariable long userId) {
+        userSubscriptionService.unfollowUser(userContext.getUserId(), userId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/followees/{followeeId}/amount")
-    public CountResponse getFollowersCount(@PathVariable long followeeId) {
-        return userSubscriptionService.getFollowersCount(followeeId);
+    @GetMapping("/{userId}/followers/count")
+    public ResponseEntity<CountResponse> getFollowersCount(@PathVariable long userId) {
+        CountResponse followersCount = userSubscriptionService.getFollowersCount(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(followersCount);
     }
 
-    @GetMapping("/followers/{followerId}/amount")
-    public CountResponse getFolloweesCount(@PathVariable long followerId) {
-        return userSubscriptionService.getFolloweesCount(followerId);
+    @GetMapping("/{userId}/followees/count")
+    public ResponseEntity<CountResponse> getFolloweesCount(@PathVariable long userId) {
+        CountResponse followeesCount = userSubscriptionService.getFolloweesCount(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(followeesCount);
     }
 
-    @GetMapping("/followees/{followeeId}/followers")
-    public ResponseEntity<List<UserDto>> getFollowers(@PathVariable long followeeId) {
-        List<UserDto> followers = userSubscriptionService.getFollowers(followeeId);
+    @GetMapping("/{userId}/followers")
+    public ResponseEntity<List<UserDto>> getFollowers(@PathVariable long userId) {
+        List<UserDto> followers = userSubscriptionService.getFollowers(userId);
         return ResponseEntity.status(HttpStatus.OK).body(followers);
     }
 
-    @GetMapping("/followers/{followerId}/followees")
-    public ResponseEntity<List<UserDto>> getFollowee(@PathVariable long followerId) {
-        List<UserDto> followees = userSubscriptionService.getFollowees(followerId);
+    @GetMapping("/{userId}/followees")
+    public ResponseEntity<List<UserDto>> getFollowees(@PathVariable long userId) {
+        List<UserDto> followees = userSubscriptionService.getFollowees(userId);
         return ResponseEntity.status(HttpStatus.OK).body(followees);
     }
 }
