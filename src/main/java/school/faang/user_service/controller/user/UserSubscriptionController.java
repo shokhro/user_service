@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import school.faang.user_service.config.context.UserContext;
 import school.faang.user_service.dto.CountResponse;
 import school.faang.user_service.dto.user.UserDto;
+import school.faang.user_service.dto.user.UserFilterDto;
 import school.faang.user_service.service.user.UserSubscriptionService;
 
 import java.util.List;
@@ -48,14 +50,20 @@ public class UserSubscriptionController {
     }
 
     @GetMapping("/{userId}/followers")
-    public ResponseEntity<List<UserDto>> getFollowers(@PathVariable long userId) {
-        List<UserDto> followers = userSubscriptionService.getFollowers(userId);
+    public ResponseEntity<List<UserDto>> getFollowers(
+            @PathVariable long userId,
+            @ModelAttribute UserFilterDto filterDto
+            ) {
+        List<UserDto> followers = userSubscriptionService.getFollowers(userId, filterDto);
         return ResponseEntity.status(HttpStatus.OK).body(followers);
     }
 
     @GetMapping("/{userId}/followees")
-    public ResponseEntity<List<UserDto>> getFollowees(@PathVariable long userId) {
-        List<UserDto> followees = userSubscriptionService.getFollowees(userId);
+    public ResponseEntity<List<UserDto>> getFollowees(
+            @PathVariable long userId,
+            @ModelAttribute UserFilterDto filterDto
+    ) {
+        List<UserDto> followees = userSubscriptionService.getFollowees(userId, filterDto);
         return ResponseEntity.status(HttpStatus.OK).body(followees);
     }
 }

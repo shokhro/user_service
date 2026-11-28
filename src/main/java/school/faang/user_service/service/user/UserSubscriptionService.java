@@ -2,6 +2,7 @@ package school.faang.user_service.service.user;
 
 import school.faang.user_service.dto.CountResponse;
 import school.faang.user_service.dto.user.UserDto;
+import school.faang.user_service.dto.user.UserFilterDto;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface UserSubscriptionService {
 
     CountResponse getFolloweesCount(long followerId);
 
-    List<UserDto> getFollowers(long followeeId);
+    List<UserDto> getFollowers(long followeeId, UserFilterDto filterDto);
 
-    List<UserDto> getFollowees(long followerId);
+    List<UserDto> getFollowees(long followerId, UserFilterDto filterDto);
 }
